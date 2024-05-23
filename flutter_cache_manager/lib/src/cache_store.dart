@@ -173,23 +173,30 @@ class CacheStore {
 
   Future<void> _removeCachedFile(
       CacheObject cacheObject, List<int> toRemove) async {
-    if (toRemove.contains(cacheObject.id)) return;
+    if (cacheObject.id != null) {
+      if (toRemove.contains(cacheObject.id)) return;
 
-    toRemove.add(cacheObject.id!);
-    if (_memCache.containsKey(cacheObject.key)) {
-      _memCache.remove(cacheObject.key);
+      toRemove.add(cacheObject.id!);
+      if (_memCache.containsKey(cacheObject.key)) {
+        _memCache.remove(cacheObject.key);
+      }
+      if (_futureCache.containsKey(cacheObject.key)) {
+        _futureCache.remove(cacheObject.key);
+      }
+      final file = await fileSystem.createFile(cacheObject.relativePath);
+      if (file.existsSync()) {
+        try {
+          await file.delete();
+          // ignore: unused_catch_clause
+        } catch (e) {
+          // File has already been deleted. Do nothing #184
+        }
+      }
     }
-    if (_futureCache.containsKey(cacheObject.key)) {
-      _futureCache.remove(cacheObject.key);
-    }
-    final file = await fileSystem.createFile(cacheObject.relativePath);
-    if (await file.exists()) {
-      await file.delete();
-    }
-  }
 
-  Future<void> dispose() async {
-    final provider = await _cacheInfoRepository;
-    await provider.close();
+    Future<void> dispose() async {
+      final provider = await _cacheInfoRepository;
+      await provider.close();
+    }
   }
 }
