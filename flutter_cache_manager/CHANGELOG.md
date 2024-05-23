@@ -1,3 +1,10 @@
+## [3.3.3] - 2024-05-23
+* Added check to cacheObject.id and try-catch block to _removeCachedFile to prevent `PathNotFoundException` from throwing when the file is already
+deleted [CacheStore].
+* Added check to cacheObject.id in removeFile [CacheManager]. 
+* Updated table creation in open to prevent a table from being opened if it already exists [CacheObjectProvider].
+* Added empty check to deleteAll before traversing through id list [CacheObjectProvider].
+
 ## [3.3.2] - 2024-04-25
 * Updates dependencies to their latest versions.
 

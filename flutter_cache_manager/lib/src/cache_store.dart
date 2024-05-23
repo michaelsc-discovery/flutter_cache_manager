@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_cache_manager/src/storage/cache_object.dart';
@@ -189,14 +188,15 @@ class CacheStore {
         try {
           await file.delete();
           // ignore: unused_catch_clause
-        }  catch (e) {
+        } catch (e) {
           // File has already been deleted. Do nothing #184
         }
       }
     }
 
-  Future<void> dispose() async {
-    final provider = await _cacheInfoRepository;
-    await provider.close();
+    Future<void> dispose() async {
+      final provider = await _cacheInfoRepository;
+      await provider.close();
+    }
   }
 }
